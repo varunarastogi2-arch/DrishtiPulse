@@ -1,0 +1,13 @@
+{
+  "case_id": "CASE-00042",
+  "state": "Maharashtra",
+  "sector": "Roads",
+  "num_landowners": 24,
+  "consent_pct": 58.0,
+  "consent_growth_rate": 1.2,
+  "litigation_flag": 1,
+  "title_dispute_flag": 0,
+  "compensation_gap_pct": 35.0,
+  "pending_approvals": 3,
+  "days_since_notification": 420
+}

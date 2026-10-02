@@ -1,0 +1,33 @@
+# Python virtual environments and cache
+venv/
+.venv/
+**/venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+**/node_modules/
+dist/
+.vite/
+
+# Secrets and local config (never push these)
+.env
+.env.*
+*.key
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local database (regenerate with seed_predictions.py)
+predictions.db
+
+# Stray leftovers
+/package-lock.json
