@@ -284,6 +284,39 @@ def analytics_state_risk():
 
     return result
 
+@app.get("/analytics/overview")
+def analytics_overview():
+    df = get_annotated_df()
+    if df.empty:
+        return {}
+
+    total_cases = int(len(df))
+    avg_risk_score = float(df["risk_pct"].mean())
+    avg_days_delay = int(round(df["delay_days"].mean()))
+    
+    top_bottleneck = str(df["top_bottleneck_human"].mode()[0])
+
+    state_risk = df.groupby("state")["risk_pct"].mean().sort_values(ascending=False).head(5)
+    state_wise_risk = [{"state": str(k), "score": round(float(v), 1)} for k, v in state_risk.items()]
+    
+    risk_counts = df["risk_level"].value_counts().to_dict()
+    for k in ["Low", "Medium", "High", "Critical"]:
+        if k not in risk_counts:
+            risk_counts[k] = 0
+            
+    high_critical_cases = risk_counts.get("High", 0) + risk_counts.get("Critical", 0)
+    high_critical_pct = int(round(high_critical_cases / total_cases * 100)) if total_cases > 0 else 0
+
+    return {
+        "total_cases": total_cases,
+        "avg_risk_score": round(avg_risk_score, 1),
+        "avg_days_delay": avg_days_delay,
+        "top_bottleneck": top_bottleneck,
+        "state_wise_risk": state_wise_risk,
+        "risk_concentration": risk_counts,
+        "high_critical_pct": high_critical_pct
+    }
+
 @app.get("/analytics/state-cases")
 def analytics_state_cases(state: str, limit: int = 10):
     df = get_annotated_df()

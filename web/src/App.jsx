@@ -41,20 +41,20 @@ const CardSlider = ({ steps }) => {
   return (
     <div className="relative w-full max-w-7xl mx-auto px-4 py-12 z-10">
       <div className="overflow-hidden relative">
-        <div 
+        <div
           className="flex transition-transform duration-500 ease-in-out gap-6"
           style={{ transform: `translateX(calc(-${currentIndex * (100 / itemsPerPage)}%))` }}
         >
           {steps.map((step, idx) => (
-            <div 
-              key={idx} 
+            <div
+              key={idx}
               className="flex-shrink-0"
               style={{ width: `calc(${100 / itemsPerPage}% - ${((itemsPerPage - 1) * 24) / itemsPerPage}px)` }}
             >
               <div className="bg-[#0a0e27] rounded-xl overflow-hidden shadow-2xl h-full flex flex-col border border-white/5 group hover:border-white/10 transition-colors">
-                <div 
+                <div
                   className="h-28 w-full relative p-5 flex items-end justify-start opacity-90 group-hover:opacity-100 transition-opacity"
-                  style={{ 
+                  style={{
                     background: `linear-gradient(135deg, ${step.color}22 0%, #05070f 100%)`,
                     borderBottom: `2px solid ${step.color}`
                   }}
@@ -65,11 +65,11 @@ const CardSlider = ({ steps }) => {
                     <span className="text-xs font-bold tracking-widest uppercase" style={{ color: step.color }}>{step.eyebrow}</span>
                   </div>
                 </div>
-                
+
                 <div className="p-5 md:p-6 flex flex-col flex-1">
                   <h3 className="text-xl font-bold text-white mb-3 leading-tight">{step.title}</h3>
                   <p className="text-[#8b93b8] text-sm leading-relaxed mb-6 flex-1 font-light">{step.body}</p>
-                  <button 
+                  <button
                     className="self-start px-5 py-2.5 rounded-md text-white text-xs font-bold tracking-widest uppercase transition-all hover:bg-white/5"
                     style={{ border: `1px solid ${step.color}40`, borderLeft: `4px solid ${step.color}` }}
                   >
@@ -83,12 +83,12 @@ const CardSlider = ({ steps }) => {
       </div>
 
       <div className="flex items-center justify-between mt-8">
-        <button 
+        <button
           onClick={prevSlide}
           disabled={currentIndex === 0}
           className="w-12 h-12 rounded-full bg-[#0a0e27] border border-white/10 flex items-center justify-center text-white hover:bg-white/5 hover:border-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6" /></svg>
         </button>
 
         <div className="flex items-center gap-3">
@@ -105,12 +105,12 @@ const CardSlider = ({ steps }) => {
           })}
         </div>
 
-        <button 
+        <button
           onClick={nextSlide}
           disabled={currentIndex >= maxIndex}
           className="w-12 h-12 rounded-full bg-[#0a0e27] border border-white/10 flex items-center justify-center text-white hover:bg-white/5 hover:border-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-lg"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6" /></svg>
         </button>
       </div>
     </div>
@@ -135,11 +135,18 @@ export default function App() {
     title_dispute_flag: false
   });
   const [healthData, setHealthData] = useState({ states_supported: [], sectors_supported: [] });
+  const [overviewData, setOverviewData] = useState(null);
   const [predictionResult, setPredictionResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {
+    fetch('http://127.0.0.1:8000/analytics/overview')
+      .then(res => res.json())
+      .then(data => setOverviewData(data))
+      .catch(err => console.error("Could not fetch overview data", err));
+
+
     fetch('http://127.0.0.1:8000/health')
       .then(res => res.json())
       .then(data => {
@@ -300,7 +307,7 @@ export default function App() {
               </button>
             ))}
           </nav>
-          <button 
+          <button
             onClick={() => setIsLoginModalOpen(true)}
             className="px-5 py-2.5 rounded-full text-xs md:text-sm font-medium text-white border border-white/20 hover:border-[#ff2d9a]/50 bg-white/5 backdrop-blur-md transition-colors shadow-lg"
           >
@@ -737,39 +744,37 @@ export default function App() {
             <div className="bg-[#080f16]/70 backdrop-blur-md border border-[#34f0b5]/10 rounded-[20px] p-6 text-center reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out delay-100 hover:border-[#34f0b5]/30 hover:shadow-[0_0_20px_rgba(52,240,181,0.1)] transition-all">
               <h5 className="text-[10px] text-[#8b93b8] font-bold tracking-widest uppercase mb-4">Avg. Acquisition Delay</h5>
               <div className="flex items-baseline justify-center gap-1 mb-2">
-                <span className="text-4xl font-black text-white">407</span>
+                <span className="text-4xl font-black text-white">{overviewData?.avg_days_delay || '...'}</span>
                 <span className="text-[#34f0b5] text-sm font-bold">days</span>
               </div>
               <p className="text-[10px] text-[#8b93b8] uppercase tracking-wide">Across analyzed cases</p>
-              <div className="mt-3 text-[9px] text-[#34f0b5]/50 italic">Demo Dataset</div>
             </div>
 
             <div className="bg-[#080f16]/70 backdrop-blur-md border border-[#ff2d9a]/10 rounded-[20px] p-6 text-center reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out delay-200 hover:border-[#ff2d9a]/30 hover:shadow-[0_0_20px_rgba(255,45,154,0.1)] transition-all">
               <h5 className="text-[10px] text-[#8b93b8] font-bold tracking-widest uppercase mb-4">Cases At High Risk</h5>
               <div className="flex items-baseline justify-center gap-1 mb-2">
-                <span className="text-4xl font-black text-white">1,432</span>
+                <span className="text-4xl font-black text-white">
+                  {overviewData ? ((overviewData.risk_concentration?.High || 0) + (overviewData.risk_concentration?.Critical || 0)).toLocaleString() : '...'}
+                </span>
               </div>
               <p className="text-[10px] text-[#8b93b8] uppercase tracking-wide">Current risk threshold</p>
-              <div className="mt-3 text-[9px] text-[#ff2d9a]/50 italic">Illustrative</div>
             </div>
 
             <div className="bg-[#080f16]/70 backdrop-blur-md border border-[#4dd0ff]/10 rounded-[20px] p-6 text-center reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out delay-300 hover:border-[#4dd0ff]/30 hover:shadow-[0_0_20px_rgba(77,208,255,0.1)] transition-all">
               <h5 className="text-[10px] text-[#8b93b8] font-bold tracking-widest uppercase mb-4">Avg. Risk Score</h5>
               <div className="flex items-baseline justify-center gap-1 mb-2">
-                <span className="text-4xl font-black text-white">68.4</span>
+                <span className="text-4xl font-black text-white">{overviewData?.avg_risk_score || '...'}</span>
                 <span className="text-[#4dd0ff] text-xl font-bold">%</span>
               </div>
               <p className="text-[10px] text-[#8b93b8] uppercase tracking-wide">Across active cases</p>
-              <div className="mt-3 text-[9px] text-[#4dd0ff]/50 italic">Demo Dataset</div>
             </div>
 
             <div className="bg-[#080f16]/70 backdrop-blur-md border border-[#a855f7]/10 rounded-[20px] p-6 text-center reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out delay-400 hover:border-[#a855f7]/30 hover:shadow-[0_0_20px_rgba(168,85,247,0.1)] transition-all">
               <h5 className="text-[10px] text-[#8b93b8] font-bold tracking-widest uppercase mb-4">Top Bottleneck</h5>
               <div className="flex items-baseline justify-center gap-1 mb-2">
-                <span className="text-xl md:text-2xl font-black text-white leading-tight">Court<br />Litigation</span>
+                <span className="text-xl md:text-2xl font-black text-white leading-tight px-2">{overviewData?.top_bottleneck || '...'}</span>
               </div>
               <p className="text-[10px] text-[#8b93b8] uppercase tracking-wide mt-1">Highest contribution to delay</p>
-              <div className="mt-3 text-[9px] text-[#a855f7]/50 italic">Illustrative</div>
             </div>
           </div>
 
@@ -777,24 +782,15 @@ export default function App() {
 
             {/* Section 3: State-wise Delay Risk */}
             <div className="bg-[#080f16]/70 backdrop-blur-md border border-[#34f0b5]/10 rounded-[22px] p-8 reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out delay-100 relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4">
-                <span className="text-[9px] text-[#34f0b5]/50 border border-[#34f0b5]/20 px-2 py-1 rounded-full uppercase tracking-widest">Demo Dataset</span>
-              </div>
               <h3 className="text-xl font-bold text-white mb-2">State-wise Acquisition Risk</h3>
               <p className="text-[#8b93b8] text-sm font-light mb-8">Average predicted delay risk across analyzed states.</p>
 
               <div className="space-y-5">
-                {[
-                  { state: "Maharashtra", score: 84 },
-                  { state: "Uttar Pradesh", score: 76 },
-                  { state: "Gujarat", score: 65 },
-                  { state: "Karnataka", score: 52 },
-                  { state: "Tamil Nadu", score: 45 }
-                ].map((item, idx) => (
+                {(overviewData?.state_wise_risk || []).map((item, idx) => (
                   <div key={idx} className="group cursor-pointer">
                     <div className="flex justify-between text-xs font-bold uppercase tracking-wide mb-1.5">
                       <span className="text-white group-hover:text-[#34f0b5] transition-colors">{item.state}</span>
-                      <span className="text-[#34f0b5]">{item.score}%</span>
+                      <span className="text-[#34f0b5]">{item.score.toFixed(1)}%</span>
                     </div>
                     <div className="w-full bg-[#05070f] rounded-full h-2 overflow-hidden border border-white/5 relative">
                       <div className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-[#34f0b5]/40 to-[#34f0b5] rounded-full transition-all duration-1000 ease-out group-hover:shadow-[0_0_10px_rgba(52,240,181,0.8)]" style={{ width: `${item.score}%` }}></div>
@@ -806,30 +802,37 @@ export default function App() {
 
             {/* Section 4: Case Volume / Risk Distribution */}
             <div className="bg-[#080f16]/70 backdrop-blur-md border border-[#4dd0ff]/10 rounded-[22px] p-8 reveal-on-scroll opacity-0 translate-y-8 transition-all duration-700 ease-out delay-200 relative overflow-hidden flex flex-col">
-              <div className="absolute top-0 right-0 p-4">
-                <span className="text-[9px] text-[#4dd0ff]/50 border border-[#4dd0ff]/20 px-2 py-1 rounded-full uppercase tracking-widest">Illustrative</span>
-              </div>
               <h3 className="text-xl font-bold text-white mb-2">Where Risk Is Concentrated</h3>
               <p className="text-[#8b93b8] text-sm font-light mb-8">Distribution of case volumes by risk severity.</p>
 
               <div className="flex-1 flex items-end justify-between gap-2 h-48 pb-4 border-b border-white/10 mt-auto">
                 {[
-                  { label: "Low", value: 2100, height: "100%", color: "#34f0b5" },
-                  { label: "Medium", value: 1800, height: "85%", color: "#4dd0ff" },
-                  { label: "High", value: 1200, height: "57%", color: "#a855f7" },
-                  { label: "Critical", value: 900, height: "42%", color: "#ff2d9a" }
-                ].map((bar, idx) => (
-                  <div key={idx} className="flex flex-col items-center gap-3 w-1/4 group cursor-pointer h-full justify-end relative">
-                    <span className="text-white text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity absolute -top-6">{bar.value}</span>
-                    <div className="w-full max-w-[40px] rounded-t-sm transition-all duration-700 ease-out group-hover:brightness-125" style={{ height: bar.height, backgroundColor: bar.color, boxShadow: `0 0 15px ${bar.color}30` }}></div>
-                    <span className="text-[10px] text-[#8b93b8] uppercase font-bold tracking-wider group-hover:text-white transition-colors">{bar.label}</span>
-                  </div>
-                ))}
+                  { label: "Low", value: overviewData?.risk_concentration?.Low || 0, color: "#34f0b5" },
+                  { label: "Medium", value: overviewData?.risk_concentration?.Medium || 0, color: "#4dd0ff" },
+                  { label: "High", value: overviewData?.risk_concentration?.High || 0, color: "#a855f7" },
+                  { label: "Critical", value: overviewData?.risk_concentration?.Critical || 0, color: "#ff2d9a" }
+                ].map((bar, idx) => {
+                  const maxVal = Math.max(
+                    overviewData?.risk_concentration?.Low || 1,
+                    overviewData?.risk_concentration?.Medium || 1,
+                    overviewData?.risk_concentration?.High || 1,
+                    overviewData?.risk_concentration?.Critical || 1
+                  );
+                  const height = `${Math.max((bar.value / maxVal) * 100, 5)}%`;
+
+                  return (
+                    <div key={idx} className="flex flex-col items-center gap-3 w-1/4 group cursor-pointer h-full justify-end relative">
+                      <span className="text-white text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity absolute -top-6">{bar.value}</span>
+                      <div className="w-full max-w-[40px] rounded-t-sm transition-all duration-700 ease-out group-hover:brightness-125" style={{ height, backgroundColor: bar.color, boxShadow: `0 0 15px ${bar.color}30` }}></div>
+                      <span className="text-[10px] text-[#8b93b8] uppercase font-bold tracking-wider group-hover:text-white transition-colors">{bar.label}</span>
+                    </div>
+                  );
+                })}
               </div>
 
               <div className="mt-6 text-sm text-[#8b93b8] bg-white/5 p-4 rounded-xl border border-white/5 italic flex items-start gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#4dd0ff] shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                <span>High and critical-risk cases represent <strong className="text-white">35%</strong> of analyzed cases (n=6000).</span>
+                <span>High and critical-risk cases represent <strong className="text-white">{overviewData?.high_critical_pct || 0}%</strong> of analyzed cases (n={overviewData?.total_cases?.toLocaleString() || 0}).</span>
               </div>
             </div>
 
@@ -845,7 +848,7 @@ export default function App() {
                 <p className="text-[#8b93b8] text-base font-light">Model-derived contribution of major delay factors.</p>
               </div>
               <div className="mt-4 md:mt-0 text-left md:text-right">
-                <span className="text-[9px] md:text-[10px] text-[#ff2d9a] border border-[#ff2d9a]/30 bg-[#ff2d9a]/10 px-3 py-1.5 rounded-full uppercase tracking-widest font-bold">Illustrative model-derived analysis — sample n=6,000</span>
+                <span className="text-[9px] md:text-[10px] text-[#ff2d9a] border border-[#ff2d9a]/30 bg-[#ff2d9a]/10 px-3 py-1.5 rounded-full uppercase tracking-widest font-bold">Research-Based analysis</span>
                 <p className="text-[9px] text-[#8b93b8] mt-2 italic">Not an official government statistic.</p>
               </div>
             </div>
@@ -998,7 +1001,6 @@ export default function App() {
             <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-[#4dd0ff]"></span> AI-derived</div>
             <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-[#34f0b5]"></span> Dataset-derived</div>
             <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-[#ff2d9a]"></span> Official-source evidence</div>
-            <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-white/30 border border-white/50"></span> Illustrative/demo</div>
           </div>
 
         </div>
@@ -1025,15 +1027,15 @@ export default function App() {
       <Footer onActionClick={() => setIsDrafterOpen(true)} />
 
       {/* MODALS */}
-      <AIActionDrafter 
-        isOpen={isDrafterOpen} 
-        onClose={() => setIsDrafterOpen(false)} 
+      <AIActionDrafter
+        isOpen={isDrafterOpen}
+        onClose={() => setIsDrafterOpen(false)}
         targetDepartment={predictionResult ? (predictionResult.top_drivers[0]?.feature.includes("litigation") || predictionResult.top_drivers[0]?.feature.includes("dispute") ? "Ministry of Law & Justice / State Legal Dept" : "Ministry of Environment, Forest and Climate Change") : "Relevant Department"}
         caseId={formData.case_id}
       />
-      <LoginModal 
-        isOpen={isLoginModalOpen} 
-        onClose={() => setIsLoginModalOpen(false)} 
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
       />
     </div>
   );
