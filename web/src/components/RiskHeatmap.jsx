@@ -254,7 +254,7 @@ const RiskHeatmap = () => {
     setInputValue("sector", c.sector);
 
     // Scroll to the Action/prediction form
-    const riskSection = document.getElementById("risk");
+    const riskSection = document.getElementById("dashboard");
     if (riskSection) {
       riskSection.scrollIntoView({ behavior: "smooth" });
     }

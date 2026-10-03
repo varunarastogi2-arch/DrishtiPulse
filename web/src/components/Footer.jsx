@@ -38,7 +38,7 @@ const Footer = ({ onActionClick }) => {
             <h4 className="text-white font-bold mb-6 tracking-wider text-sm uppercase">Explore</h4>
             <ul className="space-y-3">
               <li>
-                <button onClick={() => scrollToId('risk')} className="text-slate-400 hover:text-[#4dd0ff] transition-colors text-sm">Dashboard</button>
+                <button onClick={() => scrollToId('dashboard')} className="text-slate-400 hover:text-[#4dd0ff] transition-colors text-sm">Dashboard</button>
               </li>
               <li>
                 <button onClick={() => scrollToId('analysis')} className="text-slate-400 hover:text-[#4dd0ff] transition-colors text-sm">Analysis</button>

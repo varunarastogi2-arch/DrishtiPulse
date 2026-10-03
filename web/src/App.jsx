@@ -229,12 +229,21 @@ export default function App() {
     const navObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          setActiveNav(entry.target.id);
+          if (entry.target.tagName.toLowerCase() === 'footer') {
+            setActiveNav('');
+          } else {
+            setActiveNav(entry.target.id);
+          }
         }
       });
-    }, { rootMargin: "-100px 0px -60% 0px" });
+    }, { rootMargin: "-35% 0px -64% 0px" });
 
-    document.querySelectorAll('section[id]').forEach(el => navObserver.observe(el));
+    ['dashboard', 'analysis', 'heatmap', 'action'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) navObserver.observe(el);
+    });
+    const footerEl = document.querySelector('footer');
+    if (footerEl) navObserver.observe(footerEl);
 
     // Intersection Observer for simple reveals
     const revealObserver = new IntersectionObserver((entries) => {
@@ -286,7 +295,7 @@ export default function App() {
                 onClick={(e) => {
                   e.preventDefault();
                   if (item === 'Dashboard') {
-                    const el = document.getElementById('risk');
+                    const el = document.getElementById('dashboard');
                     if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 100, behavior: 'smooth' });
                   } else if (item === 'Analysis') {
                     const el = document.getElementById('analysis');
@@ -298,7 +307,7 @@ export default function App() {
                     setIsDrafterOpen(true);
                   }
                 }}
-                className={`px-3 py-1.5 text-xs md:text-sm font-medium transition-all duration-300 relative ${(activeNav === 'analysis' && item === 'Analysis') || (activeNav === 'heatmap' && item === 'Heatmap')
+                className={`px-3 py-1.5 text-xs md:text-sm font-medium transition-all duration-300 relative ${activeNav === item.toLowerCase()
                   ? 'text-white font-bold after:absolute after:-bottom-1 after:left-1/2 after:-translate-x-1/2 after:w-full after:h-[2px] after:bg-gradient-to-r after:from-[#ff2d9a] after:to-[#4dd0ff] after:rounded-full'
                   : 'text-[#8b93b8] hover:text-white'
                   }`}
@@ -372,7 +381,7 @@ export default function App() {
       </div>
 
       {/* SECTION 3 — RISK ENGINE */}
-      <section id="risk" className="scroll-mt-24 relative z-10 bg-[#05070f] pt-24 pb-32 px-4 md:px-12 border-t border-white/5">
+      <section id="dashboard" className="scroll-mt-24 relative z-10 bg-[#05070f] pt-24 pb-32 px-4 md:px-12 border-t border-white/5">
         <div className="max-w-7xl mx-auto">
 
           <div className="text-center mb-16">
@@ -922,7 +931,7 @@ export default function App() {
                 <div className="w-12 h-12 mx-auto mb-6 bg-[#34f0b5]/10 rounded-full flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#34f0b5]"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                 </div>
-                <span className="inline-block mb-4 text-[9px] text-[#34f0b5] border border-[#34f0b5]/30 bg-[#34f0b5]/10 px-2 py-1 rounded uppercase tracking-widest font-bold">Verified Source</span>
+                <span className="inline-block mb-4 text-[9px] text-[#34f0b5] border border-[#34f0b5]/30 bg-[#34f0b5]/10 px-2 py-1 rounded uppercase tracking-widest font-bold">Example</span>
                 <h4 className="text-lg font-bold text-white mb-3">Documented Evidence</h4>
                 <p className="text-[#8b93b8] text-sm leading-relaxed">Audited records can be linked to specific delays in acquisition, approvals, awards, clearances and inter-department coordination.</p>
               </div>
@@ -942,7 +951,7 @@ export default function App() {
             {/* Evidence Timeline */}
             <div className="bg-[#080f16]/70 backdrop-blur-md border border-white/10 rounded-[24px] p-8 md:p-10">
               <h3 className="text-2xl font-bold text-white mb-2">Documented Delay Evidence</h3>
-              <p className="text-[#8b93b8] text-sm font-light mb-10">Examples from official audit and government records.</p>
+              <p className="text-[#8b93b8] text-sm font-light mb-10">Illustrative examples of documented delay types</p>
 
               <div className="space-y-6">
                 {[
